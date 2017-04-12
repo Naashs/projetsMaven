@@ -2,8 +2,16 @@ package ad;
 
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
@@ -25,14 +33,20 @@ public class App
 
         try {
         	CSVReader reader=new CSVReader(new FileReader("data.csv"));
+        	CSVWriter writer=new CSVWriter(new FileWriter("data-filtered.csv"));
         	try {
         		List<String[]> myEntries=reader.readAll();
         		for (String[] line: myEntries){
+            		List<String> alist = Arrays.asList(line);
+            		Vector<String> out = new Vector<String>();
+            		CollectionUtils.select(alist, new MonPredicat<String>(), out);
+            		System.out.println("OUT:" + out);
+            		
+            		writer.writeNext(out.toArray(new String[0]));
+            		
         			for (String val: line){
         				nb++;
-        				if (Integer.parseInt(val) > monmax){
-        					monmax=Integer.parseInt(val);
-        				}
+        				monmax=app.max(monmax, Integer.parseInt(val));
         			}
         		}
 
@@ -40,11 +54,16 @@ public class App
         	} catch (IOException e){
         		System.out.println("Probleme readAll");
         	}
+        	reader.close();
+        	writer.close();
 
         } catch(FileNotFoundException e) {
     	    System.out.println(e.getMessage());
 
-        }
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         System.out.println("Nombre lu : "+nb);
         System.out.println("Nombre max : "+monmax);
         
@@ -55,6 +74,8 @@ public class App
     	return a>b?a:b;
     }
 
+    
+    
     
     
 }
