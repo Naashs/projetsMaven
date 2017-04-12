@@ -33,7 +33,7 @@ public class App
 
         try {
         	CSVReader reader=new CSVReader(new FileReader("data.csv"));
-        	CSVWriter writer=new CSVWriter(new FileWriter("data-filtered.csv"));
+        	CSVWriter writer=new CSVWriter(new FileWriter("data-filtered.csv"), ',', CSVWriter.NO_QUOTE_CHARACTER);
         	try {
         		List<String[]> myEntries=reader.readAll();
         		for (String[] line: myEntries){
